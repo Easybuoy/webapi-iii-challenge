@@ -56,7 +56,27 @@ router.post("/:id/posts", validateUserId, validatePost, async (req, res) => {
   }
 });
 
-router.get("/", (req, res) => {});
+/**
+ * METHOD: GET
+ * ROUTE: /api/users/
+ * PURPOSE: Get all users
+ */
+router.get("/", async (req, res) => {
+  try {
+    const users = await UserDb.get();
+    if (users.length > 0) {
+      return res.json({ status: "success", data: users });
+    }
+
+    return res
+      .status(404)
+      .json({ status: "error", message: "Users not found" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: "error", message: "Error getting users" });
+  }
+});
 
 router.get("/:id", validateUserId, (req, res) => {});
 
