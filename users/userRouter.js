@@ -2,11 +2,12 @@ const express = require("express");
 
 const router = express.Router();
 const UserDb = require("./userDb");
+const PostDb = require("../posts/postDb");
 
 /**
  * METHOD: POST
  * ROUTE: /api/users/
- * PURPOSE: Create new post
+ * PURPOSE: Create new user
  */
 router.post("/", validateUser, async (req, res) => {
   try {
@@ -29,14 +30,30 @@ router.post("/", validateUser, async (req, res) => {
   }
 });
 
-router.post("/:id/posts", validatePost, (req, res) => {
-    try {
-        console.log(req.user)
-    } catch (error) {
-        return res
-      .status(500)
-      .json({ status: "error", message: "Error creating user" });
+/**
+ * METHOD: POST
+ * ROUTE: /api/users/:id/posts
+ * PURPOSE: Create new post for a user
+ */
+router.post("/:id/posts", validateUserId, validatePost, async (req, res) => {
+  try {
+    const { text } = req.body;
+
+    const newPost = await PostDb.insert({ user_id: req.user.id, text });
+    if (newPost) {
+      return res
+        .status(201)
+        .json({ status: "success", message: "Post Created Successfully" });
     }
+
+    return res
+      .status(500)
+      .json({ status: "error", message: "Error creating post for user" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: "error", message: "Error creating post for user" });
+  }
 });
 
 router.get("/", (req, res) => {});
@@ -84,7 +101,7 @@ function validatePost(req, res, next) {
     return res.status(400).json({ message: "missing post data" });
   }
 
-  if (!body.name) {
+  if (!body.text) {
     return res.status(400).json({ message: "missing required text field" });
   }
 
