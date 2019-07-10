@@ -4,7 +4,9 @@ const userRoutes = require('./users/userRouter');
 
 const server = express();
 
+
 //custom middleware
+server.use(express.json())
 server.use(logger)
 
 server.get('/', (req, res) => {
