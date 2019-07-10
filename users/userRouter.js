@@ -141,14 +141,31 @@ router.delete("/:id", validateUserId, async (req, res) => {
       .status(500)
       .json({ status: "error", message: "Error deleting user" });
   } catch (error) {
-    console.log(error);
     return res
       .status(500)
       .json({ status: "error", message: "Error deleting user" });
   }
 });
 
-router.put("/:id", (req, res) => {});
+router.put("/:id", validateUserId, validateUser, async (req, res) => {
+  try {
+    const { name } = req.body;
+    const updatedUser = await UserDb.update(req.user.id, { name });
+    if (updatedUser === 1) {
+      return res.json({
+        status: "success",
+        message: "User updated successfully"
+      });
+    }
+    return res
+      .status(500)
+      .json({ status: "error", message: "Error updating user" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: "error", message: "Error updating user" });
+  }
+});
 
 //custom middleware
 
