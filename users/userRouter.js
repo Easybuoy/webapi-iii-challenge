@@ -147,6 +147,12 @@ router.delete("/:id", validateUserId, async (req, res) => {
   }
 });
 
+
+/**
+ * METHOD: PUT
+ * ROUTE: /api/users/:id
+ * PURPOSE: Update a user
+ */
 router.put("/:id", validateUserId, validateUser, async (req, res) => {
   try {
     const { name } = req.body;
