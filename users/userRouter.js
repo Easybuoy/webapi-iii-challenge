@@ -97,7 +97,30 @@ router.get("/:id", validateUserId, async (req, res) => {
   }
 });
 
-router.get("/:id/posts", (req, res) => {});
+/**
+ * METHOD: GET
+ * ROUTE: /api/users/:id/posts
+ * PURPOSE: Get single users post(s)
+ */
+router.get("/:id/posts", validateUserId, async (req, res) => {
+  try {
+    const posts = await UserDb.getUserPosts(req.user.id);
+    if (posts.length > 0) {
+      return res.json({
+        status: "success",
+        message: "User post(s) gotten successfully",
+        data: posts
+      });
+    }
+    return res
+      .status(404)
+      .json({ status: "error", message: "User Post not found" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: "error", message: "Error getting user post(s)" });
+  }
+});
 
 router.delete("/:id", (req, res) => {});
 
