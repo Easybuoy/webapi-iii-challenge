@@ -78,7 +78,24 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", validateUserId, (req, res) => {});
+/**
+ * METHOD: GET
+ * ROUTE: /api/users/:id
+ * PURPOSE: Get single user by id
+ */
+router.get("/:id", validateUserId, async (req, res) => {
+  try {
+    return res.json({
+      status: "success",
+      data: req.user,
+      message: "User gotten successfully"
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: "error", message: "Error getting user detail" });
+  }
+});
 
 router.get("/:id/posts", (req, res) => {});
 
