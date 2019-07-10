@@ -122,7 +122,31 @@ router.get("/:id/posts", validateUserId, async (req, res) => {
   }
 });
 
-router.delete("/:id", (req, res) => {});
+/**
+ * METHOD: DELETE
+ * ROUTE: /api/users/:id
+ * PURPOSE: Delete a user
+ */
+router.delete("/:id", validateUserId, async (req, res) => {
+  try {
+    const deletedUser = await UserDb.remove(req.user.id);
+
+    if (deletedUser === 1) {
+      return res.json({
+        status: "success",
+        message: "User deleted successfully"
+      });
+    }
+    return res
+      .status(500)
+      .json({ status: "error", message: "Error deleting user" });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ status: "error", message: "Error deleting user" });
+  }
+});
 
 router.put("/:id", (req, res) => {});
 
